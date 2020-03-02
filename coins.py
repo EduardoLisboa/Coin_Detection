@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import pi, inf
 
-# Read the image 'moedas'
-img = cv2.imread('moedas.png', cv2.IMREAD_COLOR)
+# Read the image 'coins'
+img = cv2.imread('coins.png', cv2.IMREAD_COLOR)
 # Copy the original image so we can show the detected circles later
 img_orig = img.copy()
 # Converting the image to RGB pattern
@@ -12,18 +12,18 @@ img_orig = img.copy()
 img_orig = cv2.cvtColor(img_orig, cv2.COLOR_BGR2RGB)
 # Convert the image to grayscale
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-# Set the size of the plot image to 16x9 proportion
+# Setting the size of the plot image to 16x9 proportion
 plt.rcParams['figure.figsize'] = (16, 9)
-plt.imshow(img_orig)
-plt.show()
-plt.imshow(img, cmap='gray')
-plt.show()
+# plt.imshow(img_orig)
+# plt.show()
+# plt.imshow(img, cmap='gray')
+# plt.show()
 
 # Using a Gaussian Blur to reduze the details
 # so it's easier to identify circles
 img = cv2.GaussianBlur(img, (21, 21), cv2.BORDER_DEFAULT)
-plt.imshow(img, cmap='gray')
-plt.show()
+# plt.imshow(img, cmap='gray')
+# plt.show()
 
 # To find the circles, we used HoughCircles in conjunction with Hough Gradient
 # The arguments taken by the function are:
@@ -82,9 +82,9 @@ for i in all_circles_rounded[0, :]:
     cv2.putText(img_orig, f'Coin {count}', (i[0] - 70, i[1] + 30), cv2.FONT_HERSHEY_SIMPLEX, 1.1, (255, 0, 0), 2)
 
     # Saving the detected circles informations for display
-    area = pi * (i[2] ** 2)
-    perimeter = 2 * pi * i[2]
-    coins_info.append((count, area, perimeter))
+    area = pi * ((i[2] * 0.26) ** 2)
+    perimeter = 2 * pi * (i[2] * 0.26)
+    coins_info.append((count, area, perimeter, i[2]))
     count += 1
 
 # Showing the original image with the drawn circles on it
@@ -113,6 +113,31 @@ for index, coin in enumerate(coins_info):
     print(f'{coin[0]:^6}|{coin[1]:^14.2f}|{coin[2]:^16.2f}')
     print('-' * 6 + '+' + '-' * 14 + '+' + '-' * 16) if index != (len(coins_info) - 1) else print()
 
+coins_5 = list()
+coins_10 = list()
+coins_25 = list()
 
-print(f'Smallest coin:\n\tCoin {min_coin}\n\tArea: {min:.2f} pixels')
-print(f'Largest coin:\n\tCoin {max_coin}\n\tArea: {max:.2f} pixels')
+for coin in coins_info:
+    if coin[3] <= coins_info[min_coin - 1][3] + 7:
+        coins_10.append(coin)
+    elif coin[3] >= coins_info[max_coin - 1][3] - 6:
+        coins_25.append(coin)
+    else:
+        coins_5.append(coin)
+
+print(f'Smallest coin:\n\tCoin {min_coin}\n\tArea: {min:.2f} px²')
+print(f'Largest coin:\n\tCoin {max_coin}\n\tArea: {max:.2f} px²')
+
+print(f'\nQuantity of 5\'s: {len(coins_5)}')
+for coin in coins_5:
+    print(f'\tCoin {coin[0]}')
+print(f'Quantity of 10\'s: {len(coins_10)}')
+for coin in coins_10:
+    print(f'\tCoin {coin[0]}')
+print(f'Quantity of 25\'s: {len(coins_25)}')
+for coin in coins_25:
+    print(f'\tCoin {coin[0]}')
+
+value = (len(coins_5) * 5) + (len(coins_10) * 10) + (len(coins_25) * 25)
+value /= 100
+print(f'\nValue on the table: R${value:.2f}')
