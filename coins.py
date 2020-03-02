@@ -14,6 +14,8 @@ img_orig = cv2.cvtColor(img_orig, cv2.COLOR_BGR2RGB)
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # Set the size of the plot image to 16x9 proportion
 plt.rcParams['figure.figsize'] = (16, 9)
+plt.imshow(img_orig)
+plt.show()
 plt.imshow(img, cmap='gray')
 plt.show()
 
@@ -46,6 +48,7 @@ all_circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 120, param1=50, param
 # Evenly round the numbers received from HoughCircles and converts them to 16 bits unsigned integer type
 all_circles_rounded = np.uint16(np.around(all_circles))
 
+"""
 # Printing the full array of detected circles,
 # where the first number is the 'x' coordinate,
 # the second is the 'y' coordinate and
@@ -55,6 +58,7 @@ print(all_circles_rounded)
 # Printing the dimensions of the circles array
 # The number of circles detected is the second value
 print(all_circles_rounded.shape)
+"""
 print(f'I have found {all_circles_rounded.shape[1]} coins!')
 
 coins_info = list()
@@ -95,6 +99,8 @@ min_coin = -1
 
 # Printing each circles' information, as well as
 # comparing them to find the smallest and the largest ones
+print(f'{"COIN":^6}|{"AREA (px²)":^14}|{"PERIMETER (px)":^16}')
+print('-' * 6 + '+' + '-' * 14 + '+' + '-' * 16)
 for index, coin in enumerate(coins_info):
     if coin[1] <= min:
         min = coin[1]
@@ -104,10 +110,9 @@ for index, coin in enumerate(coins_info):
         max = coin[1]
         max_coin = coin[0]
 
-    print(f'Coin {coin[0]}')
-    print(f'\tArea: {coin[1]:.2f} pixels')
-    print(f'\tPerimeter: {coin[2]:.2f} pixels')
-    print()
+    print(f'{coin[0]:^6}|{coin[1]:^14.2f}|{coin[2]:^16.2f}')
+    print('-' * 6 + '+' + '-' * 14 + '+' + '-' * 16) if index != (len(coins_info) - 1) else print()
+
 
 print(f'Smallest coin:\n\tCoin {min_coin}\n\tArea: {min:.2f} pixels')
 print(f'Largest coin:\n\tCoin {max_coin}\n\tArea: {max:.2f} pixels')
