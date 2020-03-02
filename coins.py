@@ -3,10 +3,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from math import pi, inf
 
-# Read the image "moedas"
+# Read the image 'moedas'
 img = cv2.imread('moedas.png', cv2.IMREAD_COLOR)
 # Copy the original image so we can show the detected circles later
 img_orig = img.copy()
+# Converting the image to RGB pattern
+# OpenCV default is BGR (Blue, Green, Red)
+img_orig = cv2.cvtColor(img_orig, cv2.COLOR_BGR2RGB)
 # Convert the image to grayscale
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # Set the size of the plot image to 16x9 proportion
@@ -20,7 +23,7 @@ img = cv2.GaussianBlur(img, (21, 21), cv2.BORDER_DEFAULT)
 plt.imshow(img, cmap='gray')
 plt.show()
 
-# To find the circles, we use HoughCircles in conjunction with Hough Gradient
+# To find the circles, we used HoughCircles in conjunction with Hough Gradient
 # The arguments taken by the function are:
 # The image that will be analized
 # The method of analisis, in this case, Hough Gradient, which uses the gradient information of edges
@@ -71,7 +74,7 @@ for i in all_circles_rounded[0, :]:
     # This is the center of the detected circle
     cv2.circle(img_orig, (i[0], i[1]), 2, (255, 0, 0), 3)
 
-    # This just labels which circle is which
+    # This labels which circle is which
     cv2.putText(img_orig, f'Coin {count}', (i[0] - 70, i[1] + 30), cv2.FONT_HERSHEY_SIMPLEX, 1.1, (255, 0, 0), 2)
 
     # Saving the detected circles informations for display
